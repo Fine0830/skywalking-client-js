@@ -24,6 +24,7 @@ class FrameErrors extends Base {
     options: { service: string; serviceVersion: string; pagePath: string; collector?: string },
     error: Error,
   ) {
+    localStorage.setItem('ErrorBoundary', 'true');
     this.logInfo = {
       uniqueId: uuid(),
       service: options.service,

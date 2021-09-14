@@ -22,8 +22,14 @@ import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 class ResourceErrors extends Base {
   public handleErrors(options: { service: string; pagePath: string; serviceVersion: string; collector: string }) {
     window.addEventListener('error', (event) => {
-      try {
+      setTimeout(() => {
         if (!event) {
+          return;
+        }
+        const flag = localStorage.getItem('ErrorBounary');
+        // return frame error
+        if (flag === 'true') {
+          localStorage.setItem('ErrorBounary', 'false');
           return;
         }
         const target: any = event.target || event.srcElement;
@@ -49,9 +55,7 @@ class ResourceErrors extends Base {
           stack: `load ${target.tagName} resource error`,
         };
         this.traceInfo();
-      } catch (error) {
-        throw error;
-      }
+      });
     });
   }
 }
