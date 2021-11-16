@@ -56,6 +56,7 @@ The register method supports the following parameters.
 |detailMode|Boolean|Support tracing http method and url as tags in spans.|false|true|
 |noTraceOrigins|(string \| RegExp)[]|Origin in the `noTraceOrigins` list will not be traced.|false|[]|
 |traceTimeInterval|Number|Support setting time interval to report segments.|false|60000|
+|customTags|{[key: string]: string}[]|Support setting custom tags in spans.|false|undefined|
 
 ## Collect Metrics Manually
 Use the `setPerformance` method to report metrics at the moment of page loaded or any other moment meaningful.
