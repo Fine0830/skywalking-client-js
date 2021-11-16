@@ -27,6 +27,7 @@ export interface CustomOptionsType extends CustomReportOptions {
   detailMode?: boolean;
   noTraceOrigins?: (string | RegExp)[];
   traceTimeInterval?: number;
+  customTags?: { [key: string]: string }[];
 }
 
 export interface CustomReportOptions {

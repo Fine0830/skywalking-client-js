@@ -110,6 +110,12 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
       }
       if (hasTrace) {
         const endTime = new Date().getTime();
+        let customTags;
+        if (options.customTags) {
+          customTags = Object.keys(options.customTags).map((d: any) => {
+            return { key: [d], value: options.customTags[d] };
+          });
+        }
         const exitSpan: SpanFields = {
           operationName: options.pagePath,
           startTime: startTime,
@@ -131,6 +137,7 @@ export default function windowFetch(options: CustomOptionsType, segments: Segmen
                   key: 'url',
                   value: (response && response.url) || `${url.protocol}//${url.host}${url.pathname}`,
                 },
+                ...customTags,
               ]
             : undefined,
         };
