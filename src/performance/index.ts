@@ -36,6 +36,9 @@ class TracePerf {
     }
     // auto report pv and perf data
     setTimeout(() => {
+      if (options.autoTracePerf) {
+        this.perfConfig.perfDetail = new pagePerf().getPerfTiming();
+      }
       const perfDetail = options.autoTracePerf
         ? {
             ...this.perfConfig.perfDetail,
