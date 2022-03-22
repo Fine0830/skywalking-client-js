@@ -142,7 +142,7 @@ export default function xhrInterceptor(options: CustomOptionsType, segments: Seg
           if (segCollector[i].event.status) {
             responseURL = new URL(segCollector[i].event.responseURL);
           }
-          let customTags;
+          let customTags: any[] = [];
           if (options.customTags) {
             customTags = Object.keys(options.customTags).map((d: any) => {
               return { key: [d], value: options.customTags[d] };
