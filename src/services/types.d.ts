@@ -31,4 +31,5 @@ export interface ReportFields {
   service: string;
   serviceVersion: string;
   pagePath: string;
+  collector: string;
 }

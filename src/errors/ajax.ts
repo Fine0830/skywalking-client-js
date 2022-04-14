@@ -21,7 +21,7 @@ import { GradeTypeEnum, ErrorsCategory, ReportTypes } from '../services/constant
 
 class AjaxErrors extends Base {
   // get http error info
-  public handleError(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
+  public handleError(collector: string) {
     // XMLHttpRequest Object
     if (!window.XMLHttpRequest) {
       return;
@@ -34,25 +34,23 @@ class AjaxErrors extends Base {
         if (detail.readyState !== 4) {
           return;
         }
-        if (detail.getRequestConfig[1] === options.collector + ReportTypes.ERRORS) {
+        if (detail.getRequestConfig[1] === collector + ReportTypes.ERRORS) {
           return;
         }
         if (detail.status !== 0 && detail.status < 400) {
           return;
         }
 
-        this.logInfo = {
+        const logInfo = {
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
           category: ErrorsCategory.AJAX_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: detail.getRequestConfig[1],
           message: `status: ${detail.status}; statusText: ${detail.statusText};`,
-          collector: options.collector,
           stack: detail.responseText,
         };
+
+        this.setLogInfo(logInfo);
         this.traceInfo();
       },
     );

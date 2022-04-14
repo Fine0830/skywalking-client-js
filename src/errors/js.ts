@@ -19,22 +19,19 @@ import uuid from '../services/uuid';
 import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 class JSErrors extends Base {
-  public handleErrors(options: { service: string; serviceVersion: string; pagePath: string; collector: string }) {
+  public handleErrors() {
     window.onerror = (message, url, line, col, error) => {
-      this.logInfo = {
+      const logInfo = {
         uniqueId: uuid(),
-        service: options.service,
-        serviceVersion: options.serviceVersion,
-        pagePath: options.pagePath,
         category: ErrorsCategory.JS_ERROR,
         grade: GradeTypeEnum.ERROR,
         errorUrl: url,
         line,
         col,
         message,
-        collector: options.collector,
         stack: error ? error.stack : '',
       };
+      this.setLogInfo(logInfo);
       this.traceInfo();
     };
   }

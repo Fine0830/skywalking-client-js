@@ -19,21 +19,26 @@ import { CustomOptionsType, CustomReportOptions } from './types';
 import { JSErrors, PromiseErrors, AjaxErrors, ResourceErrors, VueErrors, FrameErrors } from './errors/index';
 import tracePerf from './performance/index';
 import traceSegment from './trace/segment';
+import Base from './services/base';
 
+const InitOpts: CustomOptionsType = {
+  collector: location.origin, // report serve
+  service: '',
+  pagePath: '',
+  serviceVersion: '',
+  jsErrors: true, // vue, js and promise errors
+  apiErrors: true,
+  resourceErrors: true,
+  autoTracePerf: true, // trace performance detail
+  useFmp: false, // use first meaningful paint
+  enableSPA: false,
+  traceSDKInternal: false,
+  detailMode: true,
+  noTraceOrigins: [],
+  traceTimeInterval: 60000, // 1min
+};
 const ClientMonitor = {
-  customOptions: {
-    collector: location.origin, // report serve
-    jsErrors: true, // vue, js and promise errors
-    apiErrors: true,
-    resourceErrors: true,
-    autoTracePerf: true, // trace performance detail
-    useFmp: false, // use first meaningful paint
-    enableSPA: false,
-    traceSDKInternal: false,
-    detailMode: true,
-    noTraceOrigins: [],
-    traceTimeInterval: 60000, // 1min
-  } as CustomOptionsType,
+  customOptions: InitOpts as CustomOptionsType,
 
   register(configs: CustomOptionsType) {
     this.customOptions = {
@@ -50,6 +55,7 @@ const ClientMonitor = {
   performance(configs: any) {
     // trace and report perf data and pv to serve when page loaded
     if (document.readyState === 'complete') {
+      console.log(configs);
       tracePerf.getPerf(configs);
     } else {
       window.addEventListener(
@@ -64,31 +70,33 @@ const ClientMonitor = {
 
   catchErrors(options: CustomOptionsType) {
     const { service, pagePath, serviceVersion, collector } = options;
-
+    new Base().setLogInfo({ service, pagePath, serviceVersion, collector });
     if (options.jsErrors) {
-      JSErrors.handleErrors({ service, pagePath, serviceVersion, collector });
-      PromiseErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      JSErrors.handleErrors();
+      PromiseErrors.handleErrors();
       if (options.vue) {
-        VueErrors.handleErrors({ service, pagePath, serviceVersion, collector }, options.vue);
+        VueErrors.handleErrors(options.vue);
       }
     }
     if (options.apiErrors) {
-      AjaxErrors.handleError({ service, pagePath, serviceVersion, collector });
+      AjaxErrors.handleError(collector);
     }
     if (options.resourceErrors) {
-      ResourceErrors.handleErrors({ service, pagePath, serviceVersion, collector });
+      ResourceErrors.handleErrors();
     }
   },
   setPerformance(configs: CustomOptionsType) {
     // history router
-    this.customOptions = {
-      ...this.customOptions,
-      ...configs,
-    };
+    this.customOptions = { ...InitOpts, ...configs };
+    const { service, pagePath, serviceVersion, collector } = this.customOptions;
     this.performance(this.customOptions);
+    new Base().setLogInfo({ service, pagePath, serviceVersion, collector });
   },
   reportFrameErrors(configs: CustomReportOptions, error: Error) {
-    FrameErrors.handleErrors(configs, error);
+    const { service, pagePath, serviceVersion, collector } = this.customOptions;
+
+    new Base().setLogInfo({ service, pagePath, serviceVersion, collector });
+    FrameErrors.handleErrors(error);
   },
 };
 

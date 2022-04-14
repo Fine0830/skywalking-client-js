@@ -20,13 +20,13 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class ResourceErrors extends Base {
-  public handleErrors(options: { service: string; pagePath: string; serviceVersion: string; collector: string }) {
+  public handleErrors() {
     window.addEventListener('error', (event) => {
       try {
         if (!event) {
           return;
         }
-        const target: any = event.target || event.srcElement;
+        const target: any = event.target;
         const isElementTarget =
           target instanceof HTMLScriptElement ||
           target instanceof HTMLLinkElement ||
@@ -36,18 +36,15 @@ class ResourceErrors extends Base {
           // return js error
           return;
         }
-        this.logInfo = {
+        const logInfo = {
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
           category: ErrorsCategory.RESOURCE_ERROR,
           grade: target.tagName === 'IMG' ? GradeTypeEnum.WARNING : GradeTypeEnum.ERROR,
-          errorUrl: target.src || target.href || location.href,
+          errorUrl: (target as HTMLScriptElement).src || (target as HTMLLinkElement).href || location.href,
           message: `load ${target.tagName} resource error`,
-          collector: options.collector,
           stack: `load ${target.tagName} resource error`,
         };
+        this.setLogInfo(logInfo);
         this.traceInfo();
       } catch (error) {
         throw error;

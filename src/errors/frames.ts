@@ -20,22 +20,17 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class FrameErrors extends Base {
-  public handleErrors(
-    options: { service: string; serviceVersion: string; pagePath: string; collector?: string },
-    error: Error,
-  ) {
-    this.logInfo = {
+  public handleErrors(error: Error) {
+    const logInfo = {
       uniqueId: uuid(),
-      service: options.service,
-      serviceVersion: options.serviceVersion,
-      pagePath: options.pagePath,
       category: ErrorsCategory.JS_ERROR,
       grade: GradeTypeEnum.ERROR,
       errorUrl: error.name || location.href,
       message: error.message,
-      collector: options.collector || location.origin,
       stack: error.stack,
     };
+
+    this.setLogInfo(logInfo);
     this.traceInfo();
   }
 }

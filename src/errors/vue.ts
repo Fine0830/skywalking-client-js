@@ -20,24 +20,18 @@ import Base from '../services/base';
 import { GradeTypeEnum, ErrorsCategory } from '../services/constant';
 
 class VueErrors extends Base {
-  public handleErrors(
-    options: { service: string; pagePath: string; serviceVersion: string; collector: string },
-    Vue: any,
-  ) {
+  public handleErrors(Vue: any) {
     Vue.config.errorHandler = (error: Error, vm: any, info: string) => {
       try {
-        this.logInfo = {
+        const logInfo = {
           uniqueId: uuid(),
-          service: options.service,
-          serviceVersion: options.serviceVersion,
-          pagePath: options.pagePath,
           category: ErrorsCategory.VUE_ERROR,
           grade: GradeTypeEnum.ERROR,
           errorUrl: location.href,
           message: info,
-          collector: options.collector,
           stack: error.stack,
         };
+        this.setLogInfo(logInfo);
         this.traceInfo();
       } catch (error) {
         throw error;
