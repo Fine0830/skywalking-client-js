@@ -85,9 +85,9 @@ const ClientMonitor = {
       ResourceErrors.handleErrors();
     }
   },
-  setPerformance(configs: CustomOptionsType) {
+  setPerformance(configs: CustomReportOptions) {
     // history router
-    this.customOptions = { ...InitOpts, ...configs };
+    this.customOptions = { ...this.customOptions, ...configs, useFmp: false };
     const { service, pagePath, serviceVersion, collector } = this.customOptions;
     this.performance(this.customOptions);
     new Base().setLogInfo({ service, pagePath, serviceVersion, collector });

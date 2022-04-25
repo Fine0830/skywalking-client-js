@@ -166,7 +166,7 @@ class ErrorBoundary extends React.Component {
 ```
 
 ```js
-// Vue
+// Vue2
 Vue.config.errorHandler = (error) => {
   ClientMonitor.reportFrameErrors({
     collector: 'http://127.0.0.1',

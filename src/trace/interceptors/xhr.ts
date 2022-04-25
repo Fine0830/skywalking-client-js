@@ -22,6 +22,14 @@ import { SegmentFields, SpanFields } from '../type';
 
 export default function xhrInterceptor(options: CustomOptionsType, segments: SegmentFields[]) {
   const originalXHR = window.XMLHttpRequest as any;
+  if (!originalXHR.prototype.send) {
+    console.error('Tracing is not supported');
+    return;
+  }
+  if (!originalXHR.prototype.open) {
+    console.error('Tracing is not supported');
+    return;
+  }
   const xhrSend = XMLHttpRequest.prototype.send;
   const xhrOpen = XMLHttpRequest.prototype.open;
 
